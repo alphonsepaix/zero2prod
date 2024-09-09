@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO messages (message_id, username, message_content, publish_date)\n        VALUES ($1, $2, $3, $4);\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Varchar",
+        "Text",
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e610f0a2f9bf1849a3377f1eddf40affde129bd4ad4fd0bc024317c0645c5bf5"
+}
