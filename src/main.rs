@@ -9,7 +9,10 @@ use zero2prod::telemetry::init_subscriber;
 async fn main() -> Result<(), std::io::Error> {
     init_subscriber("zero2prod".into(), "trace".into(), std::io::stdout);
     let configuration = get_configuration().expect("Failed to read configuration.");
-    let address = format!("127.0.0.1:{}", configuration.application_port);
+    let address = format!(
+        "{}:{}",
+        configuration.application.host, configuration.application.port
+    );
     let listener = tokio::net::TcpListener::bind(address).await.unwrap();
     let pool = PgPoolOptions::new()
         .max_connections(5)
