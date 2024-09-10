@@ -1,5 +1,4 @@
 use once_cell::sync::Lazy;
-use secrecy::ExposeSecret;
 use sqlx::{postgres::PgPoolOptions, Executor, PgPool};
 use std::time::Duration;
 use uuid::Uuid;
@@ -27,7 +26,7 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .acquire_timeout(Duration::from_secs(3))
-        .connect(config.connection_string_without_db().expose_secret())
+        .connect_with(config.without_db())
         .await
         .expect("Failed to connect to Postgres.");
     pool.execute(format!(r#"CREATE DATABASE "{}";"#, &config.database_name).as_str())
@@ -35,7 +34,7 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .expect("Failed to create the database.");
 
     // Migrate the database.
-    let connection_pool = PgPool::connect(config.connection_string().expose_secret())
+    let connection_pool = PgPool::connect_with(config.with_db())
         .await
         .expect("Failed to connect to Postgres.");
     sqlx::migrate!("./migrations")
